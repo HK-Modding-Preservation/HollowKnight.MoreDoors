@@ -1,8 +1,8 @@
-﻿using ItemChanger;
+﻿using System.Linq;
+using ItemChanger;
 using ItemChanger.Tags;
 using ItemChanger.UIDefs;
 using MoreDoors.Data;
-using System.Linq;
 
 namespace MoreDoors.IC;
 
@@ -30,25 +30,34 @@ public class KeyItem : AbstractItem
         AddInterop(this);
     }
 
-    public KeyItem(string doorName, DoorData data) : this(doorName, data.Key!.ItemName, new MsgUIDef()
-    {
-        name = new BoxedString(data.Key.UIItemName),
-        shopDesc = new BoxedString(data.Key.ShopDesc),
-        sprite = data.Key.Sprite!,
-    })
-    { }
+    public KeyItem(string doorName, DoorData data)
+        : this(
+            doorName,
+            data.Key!.ItemName,
+            new MsgUIDef()
+            {
+                name = new BoxedString(data.Key.UIItemName),
+                shopDesc = new BoxedString(data.Key.ShopDesc),
+                sprite = data.Key.Sprite!,
+            }
+        ) { }
 
     public void AddLocationInteropTags(DoorData data)
     {
         var interop = AddInterop(data.Key!.Location!);
 
-        interop.Properties["WorldMapLocations"] = data.Key.GetWorldMapLocations().Select(l => l.AsTuple).ToArray();
+        interop.Properties["WorldMapLocations"] = data
+            .Key.GetWorldMapLocations()
+            .Select(l => l.AsTuple)
+            .ToArray();
         interop.Properties["PinSpriteKey"] = "Keys";
     }
 
     public override AbstractItem Clone() => new KeyItem(DoorName, name, UIDef?.Clone());
 
-    public override void GiveImmediate(GiveInfo info) => PlayerData.instance.SetBool(DoorData.GetDoor(DoorName)!.PDKeyName, true);
+    public override void GiveImmediate(GiveInfo info) =>
+        PlayerData.instance.SetBool(DoorData.GetDoor(DoorName)!.PDKeyName, true);
 
-    public override bool Redundant() => PlayerData.instance.GetBool(DoorData.GetDoor(DoorName)!.PDKeyName);
+    public override bool Redundant() =>
+        PlayerData.instance.GetBool(DoorData.GetDoor(DoorName)!.PDKeyName);
 }

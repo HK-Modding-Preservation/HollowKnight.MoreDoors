@@ -4,7 +4,10 @@ namespace MoreDoors.IC;
 
 public class EmbeddedSprite : ItemChanger.EmbeddedSprite
 {
-    private static readonly SpriteManager manager = new(typeof(EmbeddedSprite).Assembly, "MoreDoors.Resources.Sprites.");
+    private static readonly SpriteManager manager = new(
+        typeof(EmbeddedSprite).Assembly,
+        "MoreDoors.Resources.Sprites."
+    );
 
     public EmbeddedSprite(string key) => this.key = key;
 

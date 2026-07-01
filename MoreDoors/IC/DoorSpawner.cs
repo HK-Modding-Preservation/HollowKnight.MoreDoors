@@ -1,10 +1,10 @@
-﻿using HutongGames.PlayMaker;
+﻿using System.Collections;
+using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using MoreDoors.Data;
-using System.Collections;
 using UnityEngine;
 
 namespace MoreDoors.IC;
@@ -28,10 +28,12 @@ internal class SplitDoorSyncer : MonoBehaviour
 
     private void SyncDoor(string doorName, bool left)
     {
-        if (doorName != DoorName) return;
+        if (doorName != DoorName)
+            return;
 
         var fsm = gameObject.LocateMyFSM("Conversation Control");
-        if (fsm.ActiveStateName == "Idle") fsm.SetState("Yes");
+        if (fsm.ActiveStateName == "Idle")
+            fsm.SetState("Yes");
     }
 }
 
@@ -60,10 +62,12 @@ internal class DoorSecretMask : MonoBehaviour
 
     private void Update()
     {
-        if (!fading) return;
+        if (!fading)
+            return;
 
         delay += Time.deltaTime;
-        if (delay < FADE_DELAY) return;
+        if (delay < FADE_DELAY)
+            return;
 
         float excess = delay - FADE_DELAY;
         delay = FADE_DELAY;
@@ -81,7 +85,8 @@ internal class DoorSecretMask : MonoBehaviour
 
     private void FadeMask(string doorName, bool left)
     {
-        if (doorName != DoorName || left != Left) return;
+        if (doorName != DoorName || left != Left)
+            return;
         fading = true;
     }
 }
@@ -90,10 +95,7 @@ public static class DoorSpawner
 {
     private static FsmVar NewStringVar(string text)
     {
-        FsmVar ret = new(typeof(string))
-        {
-            stringValue = text
-        };
+        FsmVar ret = new(typeof(string)) { stringValue = text };
         return ret;
     }
 
@@ -101,10 +103,7 @@ public static class DoorSpawner
     {
         Vector3 dst = obj.transform.position;
 
-        GameObject parent = new()
-        {
-            name = $"{obj.name} Animation Parent"
-        };
+        GameObject parent = new() { name = $"{obj.name} Animation Parent" };
         var delta = dst - src;
         if (!left)
         {
@@ -122,40 +121,55 @@ public static class DoorSpawner
     private const float FADE_DELAY = 2.5f;
     private const float FADE_TIME = 3.5f;
 
-    private static void SetupConversationControl(PlayMakerFSM fsm, DoorData data, bool left, DoorData.DoorInfo.Location loc)
+    private static void SetupConversationControl(
+        PlayMakerFSM fsm,
+        DoorData data,
+        bool left,
+        DoorData.DoorInfo.Location loc
+    )
     {
-        fsm.GetState("Init").GetFirstActionOfType<PlayerDataBoolTest>().boolName = left ? data.PDDoorLeftForceOpenedName : data.PDDoorRightForceOpenedName;
-        fsm.GetState("Check Key").GetFirstActionOfType<PlayerDataBoolTest>().boolName = data.PDKeyName;
-        fsm.GetState("Send Text").GetFirstActionOfType<CallMethodProper>().parameters[0] = NewStringVar(left ? data.LeftKeyPromptId : data.RightKeyPromptId);
-        fsm.GetState("No Key").GetFirstActionOfType<CallMethodProper>().parameters[0] = NewStringVar(left ? data.LeftNoKeyPromptId : data.RightNoKeyPromptId);
+        fsm.GetState("Init").GetFirstActionOfType<PlayerDataBoolTest>().boolName = left
+            ? data.PDDoorLeftForceOpenedName
+            : data.PDDoorRightForceOpenedName;
+        fsm.GetState("Check Key").GetFirstActionOfType<PlayerDataBoolTest>().boolName =
+            data.PDKeyName;
+        fsm.GetState("Send Text").GetFirstActionOfType<CallMethodProper>().parameters[0] =
+            NewStringVar(left ? data.LeftKeyPromptId : data.RightKeyPromptId);
+        fsm.GetState("No Key").GetFirstActionOfType<CallMethodProper>().parameters[0] =
+            NewStringVar(left ? data.LeftNoKeyPromptId : data.RightNoKeyPromptId);
 
         var origPosition = fsm.gameObject.transform.position;
-        fsm.GetState("Open").AddFirstAction(new Lambda(() => ReparentDoor(fsm.gameObject, origPosition, left)));
+        fsm.GetState("Open")
+            .AddFirstAction(new Lambda(() => ReparentDoor(fsm.gameObject, origPosition, left)));
 
         var yes = fsm.GetState("Yes");
-        if (loc.FadeOutOnOpen) yes.AddFirstAction(new Lambda(() =>
-        {
-            IEnumerator Fade()
-            {
-                yield return new WaitForSeconds(FADE_DELAY);
-
-                var spriteRenderer = fsm.gameObject.GetComponent<SpriteRenderer>();
-                float alpha = 1;
-                while (alpha > 0)
+        if (loc.FadeOutOnOpen)
+            yes.AddFirstAction(
+                new Lambda(() =>
                 {
-                    yield return null;
-                    alpha -= Time.deltaTime / FADE_TIME;
-                    if (alpha <= 0) alpha = 0;
+                    IEnumerator Fade()
+                    {
+                        yield return new WaitForSeconds(FADE_DELAY);
 
-                    var c = spriteRenderer.color;
-                    spriteRenderer.color = new(c.r, c.g, c.b, alpha);
-                }
+                        var spriteRenderer = fsm.gameObject.GetComponent<SpriteRenderer>();
+                        float alpha = 1;
+                        while (alpha > 0)
+                        {
+                            yield return null;
+                            alpha -= Time.deltaTime / FADE_TIME;
+                            if (alpha <= 0)
+                                alpha = 0;
 
-                Object.Destroy(fsm.gameObject);
-            }
+                            var c = spriteRenderer.color;
+                            spriteRenderer.color = new(c.r, c.g, c.b, alpha);
+                        }
 
-            fsm.StartCoroutine(Fade());
-        }));
+                        Object.Destroy(fsm.gameObject);
+                    }
+
+                    fsm.StartCoroutine(Fade());
+                })
+            );
 
         var setters = fsm.GetState("Yes").GetActionsOfType<SetPlayerDataBool>();
         setters[0].boolName = MoreDoorsModule.EMPTY_BOOL;
@@ -174,7 +188,13 @@ public static class DoorSpawner
 
     private static readonly EmbeddedSprite SECRET_SPRITE = new("SecretMask");
 
-    private static void MaybeSpawnSecretMasks(Vector3 basePos, string doorName, DoorData data, bool left, DoorData.DoorInfo.Location loc)
+    private static void MaybeSpawnSecretMasks(
+        Vector3 basePos,
+        string doorName,
+        DoorData data,
+        bool left,
+        DoorData.DoorInfo.Location loc
+    )
     {
         bool showMasks = data.Door!.Mode == DoorData.DoorInfo.SplitMode.Normal;
         if (!showMasks)
@@ -182,18 +202,22 @@ public static class DoorSpawner
             bool nextToGate = left != (data.Door.Mode == DoorData.DoorInfo.SplitMode.LeftTwin);
 
             var mod = ItemChangerMod.Modules.Get<MoreDoorsModule>()!;
-            bool cameFromGate = mod.LastSceneName == loc.SceneName && mod.LastGateName == loc.GateName;
+            bool cameFromGate =
+                mod.LastSceneName == loc.SceneName && mod.LastGateName == loc.GateName;
 
             showMasks = nextToGate == cameFromGate;
         }
 
-        if (!showMasks) return;
+        if (!showMasks)
+            return;
 
         foreach (var mask in loc.Masks ?? [])
         {
             var obj = new GameObject($"{doorName}_SecretMask");
             obj.SetActive(false);
-            obj.transform.position = basePos + new Vector3((mask.Width / 2 + mask.OffsetX) * (left ? -1 : 1), mask.OffsetY, -1);
+            obj.transform.position =
+                basePos
+                + new Vector3((mask.Width / 2 + mask.OffsetX) * (left ? -1 : 1), mask.OffsetY, -1);
             obj.transform.localScale = new(mask.Width / 2 * (left ? -1 : 1), mask.Height, 1);
 
             var renderer = obj.AddComponent<SpriteRenderer>();
@@ -215,7 +239,8 @@ public static class DoorSpawner
         var data = DoorData.GetDoor(doorName)!;
         var loc = left ? data.Door!.LeftLocation! : data.Door!.RightLocation!;
         var open = mod.IsDoorOpened(doorName, left);
-        if (open && loc.FadeOutOnOpen) return;
+        if (open && loc.FadeOutOnOpen)
+            return;
 
         var gameObj = Object.Instantiate(Preloader.Instance.Door);
         var convCtrl = gameObj.LocateMyFSM("Conversation Control");
@@ -225,13 +250,16 @@ public static class DoorSpawner
 
         var renderer = gameObj.GetComponent<SpriteRenderer>();
         renderer.sprite = data.Door.Sprite!.Value;
-        if (!open && loc.Masks != null) MaybeSpawnSecretMasks(gameObj.transform.position, doorName, data, left, loc);
-        
-        if (!left) gameObj.transform.rotation = new(0, 180, 0, 0);
+        if (!open && loc.Masks != null)
+            MaybeSpawnSecretMasks(gameObj.transform.position, doorName, data, left, loc);
+
+        if (!left)
+            gameObj.transform.rotation = new(0, 180, 0, 0);
 
         gameObj.name = $"{data.CamelCaseName} Door";
         gameObj.AddComponent<DoorNameMarker>().DoorName = doorName;
-        if (!open && data.Door.Mode != DoorData.DoorInfo.SplitMode.Normal) gameObj.AddComponent<SplitDoorSyncer>();
+        if (!open && data.Door.Mode != DoorData.DoorInfo.SplitMode.Normal)
+            gameObj.AddComponent<SplitDoorSyncer>();
 
         var promptMarker = gameObj.FindChild("Prompt Marker")!;
         promptMarker.transform.localPosition = new(0.7f, 0.77f, 0.206f);
@@ -242,7 +270,10 @@ public static class DoorSpawner
         physBox.offset += new Vector2(0.5f * (left ? -1 : 1), -0.35f);
         physBox.size += new Vector2(1f, -0.7f);
 
-        if (sm.darknessLevel == 2 && !PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern)))
+        if (
+            sm.darknessLevel == 2
+            && !PlayerData.instance.GetBool(nameof(PlayerData.instance.hasLantern))
+        )
         {
             // Why is this so finicky
             Object.Destroy(promptMarker);
@@ -256,5 +287,4 @@ public static class DoorSpawner
         // Something resets the variables on awake so we have to do this last.
         SetupNpcControl(gameObj.LocateMyFSM("npc_control"), left);
     }
-
 }

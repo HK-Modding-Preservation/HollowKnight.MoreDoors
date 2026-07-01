@@ -22,7 +22,8 @@ public static class DebugInterop
     [BindableMethod(name = "Give More Keys", category = "MoreDoors")]
     public static void GiveMoreKeys()
     {
-        if (!MoreDoorsEnabled(out var mod)) return;
+        if (!MoreDoorsEnabled(out var mod))
+            return;
 
         Console.AddLine("Giving all MoreDoors Keys");
         foreach (var ds in mod!.DoorStates.Values)
@@ -35,7 +36,8 @@ public static class DebugInterop
     [BindableMethod(name = "Take More Keys", category = "MoreDoors")]
     public static void TakeMoreKeys()
     {
-        if (!MoreDoorsEnabled(out var mod)) return;
+        if (!MoreDoorsEnabled(out var mod))
+            return;
 
         Console.AddLine("Removing all MoreDoors Keys and closing all doors");
         foreach (var ds in mod!.DoorStates.Values)
@@ -51,7 +53,8 @@ public static class DebugInterop
     [BindableMethod(name = "Close Doors", category = "MoreDoors")]
     public static void CloseDoors()
     {
-        if (!MoreDoorsEnabled(out var mod)) return;
+        if (!MoreDoorsEnabled(out var mod))
+            return;
 
         Console.AddLine("Closing all MoreDoors doors");
         foreach (var ds in mod!.DoorStates.Values)

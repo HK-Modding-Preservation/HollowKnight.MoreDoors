@@ -1,8 +1,8 @@
-﻿using ItemChanger;
+﻿using System.Collections.Generic;
+using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.Locations;
 using ItemChanger.Util;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -28,11 +28,24 @@ public class ShinyEnemyLocation : EnemyLocation
 
     private void AddShiny(Scene to)
     {
-        if (!MoreDoors.GS.ShowKeyShinies || Placement.AllObtained()) return;
-        AddShinyToGameObject(ObjectLocation.FindGameObject(objectName), Placement.Items, HintShinyScale, HintShinyX, HintShinyY);
+        if (!MoreDoors.GS.ShowKeyShinies || Placement.AllObtained())
+            return;
+        AddShinyToGameObject(
+            ObjectLocation.FindGameObject(objectName),
+            Placement.Items,
+            HintShinyScale,
+            HintShinyX,
+            HintShinyY
+        );
     }
 
-    public static void AddShinyToGameObject(GameObject obj, IEnumerable<AbstractItem> items, float scale, float offx, float offy)
+    public static void AddShinyToGameObject(
+        GameObject obj,
+        IEnumerable<AbstractItem> items,
+        float scale,
+        float offx,
+        float offy
+    )
     {
         GameObject shiny = Object.Instantiate(Preloader.Instance.Shiny);
         shiny.name = "Hint Shiny";
@@ -74,7 +87,14 @@ public class ShinyEnemyFsmLocation : EnemyFsmLocation
 
     private void AddShiny(PlayMakerFSM fsm)
     {
-        if (!MoreDoors.GS.ShowKeyShinies || Placement.AllObtained()) return;
-        ShinyEnemyLocation.AddShinyToGameObject(fsm.gameObject, Placement.Items, HintShinyScale, HintShinyX, HintShinyY);
+        if (!MoreDoors.GS.ShowKeyShinies || Placement.AllObtained())
+            return;
+        ShinyEnemyLocation.AddShinyToGameObject(
+            fsm.gameObject,
+            Placement.Items,
+            HintShinyScale,
+            HintShinyX,
+            HintShinyY
+        );
     }
 }

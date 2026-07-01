@@ -1,10 +1,10 @@
-﻿using FStats;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FStats;
 using FStats.StatControllers;
 using FStats.Util;
 using ItemChanger;
 using MoreDoors.IC;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MoreDoors.FStatsInterop;
 
@@ -21,15 +21,22 @@ internal class MoreKeysStats : StatController
 
     public override IEnumerable<DisplayInfo> GetDisplayInfos()
     {
-        List<string> rows = [.. KeyCollections.OrderBy(kc => kc.time).Select(kc => $"{kc.keyName}: {kc.time.PlaytimeHHMMSS()}")];
-        if (rows.Count == 0) yield break;
-        
+        List<string> rows =
+        [
+            .. KeyCollections
+                .OrderBy(kc => kc.time)
+                .Select(kc => $"{kc.keyName}: {kc.time.PlaytimeHHMMSS()}"),
+        ];
+        if (rows.Count == 0)
+            yield break;
+
         yield return new()
         {
             Title = $"More Keys Timeline",
-            MainStat = $"Keys Collected: {KeyCollections.Count} of {ItemChangerMod.Modules.Get<MoreDoorsModule>()!.DoorStates.Count}",
+            MainStat =
+                $"Keys Collected: {KeyCollections.Count} of {ItemChangerMod.Modules.Get<MoreDoorsModule>()!.DoorStates.Count}",
             StatColumns = Columnize(rows),
-            Priority = BuiltinScreenPriorityValues.ExtensionStats
+            Priority = BuiltinScreenPriorityValues.ExtensionStats,
         };
     }
 
@@ -52,14 +59,13 @@ internal class MoreKeysStats : StatController
 
     private void OnKeyObtained(string keyName)
     {
-        if (Keys.Contains(keyName)) return;
+        if (Keys.Contains(keyName))
+            return;
 
         Keys.Add(keyName);
-        KeyCollections.Add(new()
-        {
-            keyName = keyName,
-            time = FStatsMod.LS.Get<Common>().CountedTime
-        });
+        KeyCollections.Add(
+            new() { keyName = keyName, time = FStatsMod.LS.Get<Common>().CountedTime }
+        );
     }
 }
 

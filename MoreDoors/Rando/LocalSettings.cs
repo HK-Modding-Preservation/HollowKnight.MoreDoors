@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using RandomizerCore.StringParsing;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using RandomizerCore.StringParsing;
 
 namespace MoreDoors.Rando;
 
@@ -12,6 +12,7 @@ public class LocalSettings
 
     [JsonIgnore]
     public HashSet<string> ModifiedLogicNames = [];
+
     [JsonIgnore]
     public Dictionary<string, Token> LogicSubstitutions = [];
 
@@ -24,7 +25,9 @@ public class LocalSettings
             AddKeyLocations.None => false,
             AddKeyLocations.MatchingDoors => IncludeDoor(doorName),
             AddKeyLocations.AllDoors => true,
-            _ => throw new ArgumentException($"Unknown AddKeyLocations: {Settings.AddKeyLocations}"),
+            _ => throw new ArgumentException(
+                $"Unknown AddKeyLocations: {Settings.AddKeyLocations}"
+            ),
         };
     }
 }

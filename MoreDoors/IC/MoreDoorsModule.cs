@@ -1,11 +1,11 @@
-﻿using ItemChanger;
+﻿using System.Collections.Generic;
+using ItemChanger;
 using ItemChanger.Extensions;
 using Modding;
 using MoreDoors.Data;
 using Newtonsoft.Json;
 using PurenailCore.ICUtil;
 using PurenailCore.SystemUtil;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -41,6 +41,7 @@ public class MoreDoorsModule : ItemChanger.Modules.Module
 
     [JsonIgnore]
     public string LastSceneName { get; private set; } = "";
+
     [JsonIgnore]
     public string LastGateName { get; private set; } = "";
 
@@ -69,13 +70,17 @@ public class MoreDoorsModule : ItemChanger.Modules.Module
 
     public override void Initialize()
     {
-        foreach (var e in DoorStates) IndexDoor(e.Key, DoorData.GetDoor(e.Key)!);
+        foreach (var e in DoorStates)
+            IndexDoor(e.Key, DoorData.GetDoor(e.Key)!);
         PromptStrings[MENU_KEY] = "More Keys";
 
         ModHooks.GetPlayerBoolHook += OverrideGetBool;
         ModHooks.SetPlayerBoolHook += OverrideSetBool;
         ModHooks.LanguageGetHook += OverrideLanguageGet;
-        PriorityEvents.BeforeSceneManagerStart.Subscribe(BeforeSceneManagerStartPriority, OnSceneManagerStart);
+        PriorityEvents.BeforeSceneManagerStart.Subscribe(
+            BeforeSceneManagerStartPriority,
+            OnSceneManagerStart
+        );
         Events.OnBeginSceneTransition += OnUseTransition;
         Events.OnTransitionOverride += OnTransitionOverride;
         Events.OnSceneChange += RunDeployers;
@@ -88,7 +93,10 @@ public class MoreDoorsModule : ItemChanger.Modules.Module
         ModHooks.GetPlayerBoolHook -= OverrideGetBool;
         ModHooks.SetPlayerBoolHook -= OverrideSetBool;
         ModHooks.LanguageGetHook -= OverrideLanguageGet;
-        PriorityEvents.BeforeSceneManagerStart.Unsubscribe(BeforeSceneManagerStartPriority, OnSceneManagerStart);
+        PriorityEvents.BeforeSceneManagerStart.Unsubscribe(
+            BeforeSceneManagerStartPriority,
+            OnSceneManagerStart
+        );
         Events.OnBeginSceneTransition -= OnUseTransition;
         Events.OnTransitionOverride -= OnTransitionOverride;
         Events.OnSceneChange -= RunDeployers;
@@ -122,7 +130,9 @@ public class MoreDoorsModule : ItemChanger.Modules.Module
     public bool IsDoorOpened(string doorName, bool left)
     {
         var state = DoorStates[doorName];
-        return state.DoorOpened || (left && state.LeftDoorForceOpened) || (!left && state.RightDoorForceOpened);
+        return state.DoorOpened
+            || (left && state.LeftDoorForceOpened)
+            || (!left && state.RightDoorForceOpened);
     }
 
     public delegate void DoorOpened(string doorName, bool left);
@@ -142,7 +152,8 @@ public class MoreDoorsModule : ItemChanger.Modules.Module
             state.KeyObtained = newValue;
             var data = DoorData.GetDoor(doorName)!;
 
-            if (!prev && newValue) OnKeyObtained?.Invoke(data.Key!.UIItemName);
+            if (!prev && newValue)
+                OnKeyObtained?.Invoke(data.Key!.UIItemName);
             MoreKeysPage.Instance.Update();
         }
         else if (DoorNamesByDoor.TryGetValue(name, out doorName))
@@ -162,7 +173,8 @@ public class MoreDoorsModule : ItemChanger.Modules.Module
         return newValue;
     }
 
-    private string OverrideLanguageGet(string key, string sheetTitle, string orig) => PromptStrings.TryGetValue(key, out string value) ? value : orig;
+    private string OverrideLanguageGet(string key, string sheetTitle, string orig) =>
+        PromptStrings.TryGetValue(key, out string value) ? value : orig;
 
     private static readonly HashSet<string> emptySet = [];
 
@@ -173,31 +185,40 @@ public class MoreDoorsModule : ItemChanger.Modules.Module
         foreach (var doorName in DoorNamesByScene.GetOrDefault(sceneName, emptySet)!)
         {
             var data = DoorData.GetDoor(doorName)!;
-            if (sceneName == data.Door!.LeftSceneName) DoorSpawner.SpawnDoor(this, sm, doorName, true);
-            if (sceneName == data.Door!.RightSceneName) DoorSpawner.SpawnDoor(this, sm, doorName, false);
+            if (sceneName == data.Door!.LeftSceneName)
+                DoorSpawner.SpawnDoor(this, sm, doorName, true);
+            if (sceneName == data.Door!.RightSceneName)
+                DoorSpawner.SpawnDoor(this, sm, doorName, false);
         }
 #pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
     }
 
     private void OnUseTransition(Transition t) => OnUseITransition(t);
 
-    private void OnTransitionOverride(Transition src, Transition origDst, ITransition newDst) => OnUseITransition(newDst);
+    private void OnTransitionOverride(Transition src, Transition origDst, ITransition newDst) =>
+        OnUseITransition(newDst);
 
     private void RunDeployers(Scene to)
     {
-        if (DeployersByScene.TryGetValue(to.name, out var list)) list.ForEach(d => d.OnSceneChange(to));
+        if (DeployersByScene.TryGetValue(to.name, out var list))
+            list.ForEach(d => d.OnSceneChange(to));
     }
 
-    private void OnUseITransition(ITransition t) {
+    private void OnUseITransition(ITransition t)
+    {
         LastSceneName = t.SceneName;
         LastGateName = t.GateName;
 
         // If we went through a door via RoomRando, force it open.
         var tname = $"{t.SceneName}[{t.GateName}]";
-        if (DoorNamesByTransition.TryGetValue(tname, out string doorName) && !DoorStates[doorName].DoorOpened)
+        if (
+            DoorNamesByTransition.TryGetValue(tname, out string doorName)
+            && !DoorStates[doorName].DoorOpened
+        )
         {
             var door = DoorData.GetDoor(doorName)!.Door!;
-            if (door.Mode != DoorData.DoorInfo.SplitMode.Normal) return;
+            if (door.Mode != DoorData.DoorInfo.SplitMode.Normal)
+                return;
 
             if (door.LeftLocation!.TransitionName == tname)
             {

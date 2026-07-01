@@ -1,6 +1,5 @@
-﻿using RandomizerMod.Logging;
-using System.IO;
-
+﻿using System.IO;
+using RandomizerMod.Logging;
 using JsonUtil = PurenailCore.SystemUtil.JsonUtil<MoreDoors.MoreDoors>;
 
 namespace MoreDoors.Rando;

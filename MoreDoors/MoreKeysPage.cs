@@ -1,12 +1,12 @@
-﻿using HutongGames.PlayMaker;
+﻿using System;
+using System.Collections.Generic;
+using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
 using ItemChanger;
 using ItemChanger.Extensions;
 using ItemChanger.FsmStateActions;
 using MoreDoors.Data;
 using MoreDoors.IC;
-using System;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using EmbeddedSprite = MoreDoors.IC.EmbeddedSprite;
@@ -60,10 +60,12 @@ internal record InventorySpacingParams
                 keyScale = 0.82f,
             };
         }
-        else throw new ArgumentException("Too many doors");
+        else
+            throw new ArgumentException("Too many doors");
     }
 
     public float X(int i) => xLeft + xSpace * (i % rowSize);
+
     public float Y(int i) => yTop - ySpace * (i / rowSize);
 
     public Vector3 KeyObtainedScale() => new(keyScale, keyScale, keyScale);
@@ -82,7 +84,12 @@ public class MoreKeysPage
         public readonly GameObject check;
         public readonly SpriteRenderer spriteRenderer;
 
-        public KeySlot(GameObject obj, GameObject img, GameObject check, SpriteRenderer spriteRenderer)
+        public KeySlot(
+            GameObject obj,
+            GameObject img,
+            GameObject check,
+            SpriteRenderer spriteRenderer
+        )
         {
             this.obj = obj;
             this.img = img;
@@ -90,6 +97,7 @@ public class MoreKeysPage
             this.spriteRenderer = spriteRenderer;
         }
     }
+
     private readonly List<KeySlot> keySlots = [];
     private readonly List<string> inventoryKeys = [];
 
@@ -124,14 +132,16 @@ public class MoreKeysPage
 
     private void UpdateImpl()
     {
-        if (!GetMod(out var mod)) return;
+        if (!GetMod(out var mod))
+            return;
         inventoryKeys.Clear();
 
         foreach (var e in mod!.DoorStates)
         {
             var door = e.Key;
             var dState = e.Value;
-            if (dState.KeyObtained) inventoryKeys.Add(door);
+            if (dState.KeyObtained)
+                inventoryKeys.Add(door);
         }
 
         var spacing = InventorySpacingParams.Create(DoorData.All().Count);
@@ -144,7 +154,9 @@ public class MoreKeysPage
                 var ds = mod.DoorStates[door];
                 ks.spriteRenderer.sprite = DoorData.GetDoor(door)!.Key!.Sprite!.Value;
                 ks.spriteRenderer.color = ds.DoorOpened ? KEY_USED_COLOR : KEY_OBTAINED_COLOR;
-                ks.img.transform.localScale = ds.DoorOpened ? spacing.KeyUsedScale() : spacing.KeyObtainedScale();
+                ks.img.transform.localScale = ds.DoorOpened
+                    ? spacing.KeyUsedScale()
+                    : spacing.KeyObtainedScale();
                 ks.check.SetActive(ds.KeyObtained && ds.DoorOpened);
             }
             else
@@ -182,14 +194,24 @@ public class MoreKeysPage
         inventoryKeys.Clear();
         selectedIndex = -1;
 
-        keyTitle = UnityEngine.Object.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Name").gameObject);
+        keyTitle = UnityEngine.Object.Instantiate(
+            GameObject
+                .Find("_GameCameras")
+                .transform.Find("HudCamera/Inventory/Charms/Text Name")
+                .gameObject
+        );
         keyTitle.name = "More Keys Title";
         keyTitle.transform.SetParent(moreKeysPage.transform);
         keyTitle.transform.position = new(0, -1, 0.3f);
         keyTitle.transform.localScale = new(1.2f, 1.2f, 1.2f);
         keyTitle.GetComponent<TextMeshPro>().text = "";
 
-        keyDesc = UnityEngine.Object.Instantiate(GameObject.Find("_GameCameras").transform.Find("HudCamera/Inventory/Charms/Text Desc").gameObject);
+        keyDesc = UnityEngine.Object.Instantiate(
+            GameObject
+                .Find("_GameCameras")
+                .transform.Find("HudCamera/Inventory/Charms/Text Desc")
+                .gameObject
+        );
         keyDesc.name = "More Keys Desc";
         keyDesc.transform.SetParent(moreKeysPage.transform);
         keyDesc.transform.position = new(0, -1.5f, 3.3f);
@@ -241,32 +263,42 @@ public class MoreKeysPage
         FsmState initState = fsm.GetState("Init Heart Piece");
         initState.Name = "Init More Keys";
         initState.RemoveTransitionsTo("L Arrow");
-        initState.AddLastAction(new Lambda(() =>
-        {
-            keySlots.ForEach(ks => ks.obj.SetActive(true));
-            fsm.SendEvent("FINISHED");
-        }));
+        initState.AddLastAction(
+            new Lambda(() =>
+            {
+                keySlots.ForEach(ks => ks.obj.SetActive(true));
+                fsm.SendEvent("FINISHED");
+            })
+        );
 
-        fsm.AddState(new FsmState(fsm.Fsm)
-        {
-            Name = "Up Press",
-            Actions = [new Lambda(() => HandleUpPress(fsm))]
-        });
-        fsm.AddState(new FsmState(fsm.Fsm)
-        {
-            Name = "Down Press",
-            Actions = [new Lambda(() => HandleDownPress(fsm))]
-        });
-        fsm.AddState(new FsmState(fsm.Fsm)
-        {
-            Name = "Left Press",
-            Actions = [new Lambda(() => HandleLeftPress(fsm))]
-        });
-        fsm.AddState(new FsmState(fsm.Fsm)
-        {
-            Name = "Right Press",
-            Actions = [new Lambda(() => HandleRightPress(fsm))]
-        });
+        fsm.AddState(
+            new FsmState(fsm.Fsm)
+            {
+                Name = "Up Press",
+                Actions = [new Lambda(() => HandleUpPress(fsm))],
+            }
+        );
+        fsm.AddState(
+            new FsmState(fsm.Fsm)
+            {
+                Name = "Down Press",
+                Actions = [new Lambda(() => HandleDownPress(fsm))],
+            }
+        );
+        fsm.AddState(
+            new FsmState(fsm.Fsm)
+            {
+                Name = "Left Press",
+                Actions = [new Lambda(() => HandleLeftPress(fsm))],
+            }
+        );
+        fsm.AddState(
+            new FsmState(fsm.Fsm)
+            {
+                Name = "Right Press",
+                Actions = [new Lambda(() => HandleRightPress(fsm))],
+            }
+        );
 
         // Add states for each slot on the board.
         var rArrow = fsm.GetState("R Arrow");
@@ -274,22 +306,31 @@ public class MoreKeysPage
         for (int i = 0; i < DoorData.All().Count; i++)
         {
             int index = i;
-            fsm.AddState(new FsmState(fsm.Fsm)
-            {
-                Name = $"Key {index}",
-                Actions =
-                [
-                    new Lambda(() => uCursor.FsmVariables.FindFsmGameObject("Item").Value = keySlots[index].obj),
-                    new SetSpriteRendererOrder()
-                    {
-                        gameObject = new() { GameObject = fsm.FsmVariables.FindFsmGameObject("Cursor Glow")},
-                        order = 0,
-                        delay = 0
-                    },
-                    new Lambda(() => uCursor.SendEvent("UPDATE CURSOR")),
-                    new Lambda(() => SetSelectedKeyIndex(index)),
-                ]
-            });
+            fsm.AddState(
+                new FsmState(fsm.Fsm)
+                {
+                    Name = $"Key {index}",
+                    Actions =
+                    [
+                        new Lambda(() =>
+                            uCursor.FsmVariables.FindFsmGameObject("Item").Value = keySlots[
+                                index
+                            ].obj
+                        ),
+                        new SetSpriteRendererOrder()
+                        {
+                            gameObject = new()
+                            {
+                                GameObject = fsm.FsmVariables.FindFsmGameObject("Cursor Glow"),
+                            },
+                            order = 0,
+                            delay = 0,
+                        },
+                        new Lambda(() => uCursor.SendEvent("UPDATE CURSOR")),
+                        new Lambda(() => SetSelectedKeyIndex(index)),
+                    ],
+                }
+            );
             rArrow.AddTransition($"KEY_{index}", $"Key {index}");
         }
         initState.AddTransition("FINISHED", "Key 0");
@@ -330,7 +371,8 @@ public class MoreKeysPage
         else if (inventoryKeys.Count == 0)
         {
             keyTitle!.GetComponent<TextMeshPro>().text = "???";
-            keyDesc!.GetComponent<TextMeshPro>().text = "Hallownest remains a sealed vault, for now.";
+            keyDesc!.GetComponent<TextMeshPro>().text =
+                "Hallownest remains a sealed vault, for now.";
         }
         else
         {
@@ -339,7 +381,9 @@ public class MoreKeysPage
             var data = DoorData.GetDoor(door)!;
 
             keyTitle!.GetComponent<TextMeshPro>().text = data.Key!.UIItemName;
-            keyDesc!.GetComponent<TextMeshPro>().text = dState.DoorOpened ? data.Key.UsedInvDesc : data.Key.InvDesc;
+            keyDesc!.GetComponent<TextMeshPro>().text = dState.DoorOpened
+                ? data.Key.UsedInvDesc
+                : data.Key.InvDesc;
         }
     }
 
@@ -363,7 +407,9 @@ public class MoreKeysPage
     private void HandleDownPress(PlayMakerFSM fsm)
     {
         var spacing = InventorySpacingParams.Create(DoorData.All().Count);
-        bool onBottom = (selectedIndex - (selectedIndex % spacing.rowSize)) + spacing.rowSize > inventoryKeys.Count;
+        bool onBottom =
+            (selectedIndex - (selectedIndex % spacing.rowSize)) + spacing.rowSize
+            > inventoryKeys.Count;
         if (onBottom)
         {
             fsm.SendEvent("OUT RIGHT");

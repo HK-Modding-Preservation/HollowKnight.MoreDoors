@@ -5,7 +5,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-  <Import Project="../MoreDoors/LocalOverrides.targets" Condition="Exists('../MoreDoors/LocalOverrides.targets')" />
+  <Import
+    Project="../MoreDoors/LocalOverrides.targets"
+    Condition="Exists('../MoreDoors/LocalOverrides.targets')"
+  />
   <ItemGroup>
     <ProjectReference Include="..\MoreDoors\MoreDoors.csproj" />
   </ItemGroup>

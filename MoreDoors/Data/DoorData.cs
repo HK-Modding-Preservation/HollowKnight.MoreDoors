@@ -1,32 +1,38 @@
-﻿using ItemChanger;
+﻿using System;
+using System.Collections.Generic;
+using ItemChanger;
 using ItemChanger.Locations;
 using MoreDoors.IC;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-
 using JsonUtil = PurenailCore.SystemUtil.JsonUtil<MoreDoors.MoreDoors>;
 
 namespace MoreDoors.Data;
 
 public record DoorData
 {
-    private static readonly SortedDictionary<string, DoorData> AllData = JsonUtil.DeserializeEmbedded<SortedDictionary<string, DoorData>>("MoreDoors.Resources.Data.doors.json");
+    private static readonly SortedDictionary<string, DoorData> AllData =
+        JsonUtil.DeserializeEmbedded<SortedDictionary<string, DoorData>>(
+            "MoreDoors.Resources.Data.doors.json"
+        );
 
     public static void AddExtensionDoor(string name, DoorData data)
     {
-        if (AllData.ContainsKey(name)) throw new ArgumentException($"Door '{name}' is already defined.");
+        if (AllData.ContainsKey(name))
+            throw new ArgumentException($"Door '{name}' is already defined.");
 
         AllData[name] = data;
-        if (loaded) LoadDoor(name, data);
+        if (loaded)
+            LoadDoor(name, data);
     }
 
     public static IReadOnlyDictionary<string, DoorData> All() => AllData;
 
     public static DoorData? GetDoor(string name)
     {
-        if (AllData.TryGetValue(name, out var data)) return data;
-        else return null;
+        if (AllData.TryGetValue(name, out var data))
+            return data;
+        else
+            return null;
     }
 
     private static bool loaded = false;
@@ -42,7 +48,8 @@ public record DoorData
 
     public static void Load()
     {
-        foreach (var e in AllData) LoadDoor(e.Key, e.Value);
+        foreach (var e in AllData)
+            LoadDoor(e.Key, e.Value);
 
         MoreDoors.Log("Loaded Doors");
         loaded = true;
@@ -60,6 +67,7 @@ public record DoorData
             LeftTwin,
             RightTwin,
         }
+
         private enum Side
         {
             Left,
@@ -101,30 +109,36 @@ public record DoorData
         }
 
         public ISprite? Sprite;
+
         // Location where the player looks left to the door.
         public Location? LeftLocation;
+
         // Location where the player looks right to the door.
         public Location? RightLocation;
         public SplitMode Mode;
         public List<IDeployer>? Deployers;
 
-        private Location SplitLocation(Side side) => Mode switch
-        {
-            SplitMode.Normal => side == Side.Left ? LeftLocation! : RightLocation!,
-            SplitMode.LeftTwin => LeftLocation!,
-            SplitMode.RightTwin => RightLocation!,
-            _ => throw new System.ArgumentException($"Unknown Side: {side}")
-        };
+        private Location SplitLocation(Side side) =>
+            Mode switch
+            {
+                SplitMode.Normal => side == Side.Left ? LeftLocation! : RightLocation!,
+                SplitMode.LeftTwin => LeftLocation!,
+                SplitMode.RightTwin => RightLocation!,
+                _ => throw new System.ArgumentException($"Unknown Side: {side}"),
+            };
 
         [JsonIgnore]
         public string LeftSceneName => SplitLocation(Side.Left).SceneName;
+
         [JsonIgnore]
         public string RightSceneName => SplitLocation(Side.Right).SceneName;
 
         public bool ValidateAndUpdate(out string err)
         {
-            if (!LeftLocation!.ValidateAndUpdate(out err)) return false;
-            if (!RightLocation!.ValidateAndUpdate(out err)) return false;
+            if (!LeftLocation!.ValidateAndUpdate(out err))
+                return false;
+            if (!RightLocation!.ValidateAndUpdate(out err))
+                return false;
 
             bool split = Mode == SplitMode.Normal;
             bool matching = LeftLocation.TransitionName == RightLocation.TransitionName;
@@ -138,6 +152,7 @@ public record DoorData
             return true;
         }
     }
+
     public DoorInfo? Door;
 
     public record KeyInfo
@@ -160,6 +175,7 @@ public record DoorData
             [JsonIgnore]
             public (string, float, float) AsTuple => (SceneName, X, Y);
         }
+
         public WorldMapLocation? WorldMapLocationOverride;
         public List<WorldMapLocation>? ExtraWorldMapLocations = null;
 
@@ -175,12 +191,14 @@ public record DoorData
             }
             else if (Location is DualLocation dl && dl.trueLocation is CoordinateLocation cl)
             {
-                locations.Add(new()
-                {
-                    SceneName = Location!.sceneName ?? "",
-                    X = cl.x,
-                    Y = cl.y
-                });
+                locations.Add(
+                    new()
+                    {
+                        SceneName = Location!.sceneName ?? "",
+                        X = cl.x,
+                        Y = cl.y,
+                    }
+                );
             }
             else
             {
@@ -191,6 +209,7 @@ public record DoorData
             return locations;
         }
     }
+
     public KeyInfo? Key;
 
     [JsonIgnore]
@@ -210,16 +229,20 @@ public record DoorData
 
     [JsonIgnore]
     public string LeftNoKeyPromptId => $"MOREDOORS_{UpperCaseName}_LEFT_DOOR_NOKEY";
+
     [JsonIgnore]
     public string LeftKeyPromptId => $"MOREDOORS_{UpperCaseName}_LEFT_DOOR_KEY";
+
     [JsonIgnore]
     public string RightNoKeyPromptId => $"MOREDOORS_{UpperCaseName}_RIGHT_DOOR_NOKEY";
+
     [JsonIgnore]
     public string RightKeyPromptId => $"MOREDOORS_{UpperCaseName}_RIGHT_DOOR_KEY";
 
     public bool ValidateAndUpdate(out string err)
     {
-        if (!Door!.ValidateAndUpdate(out err)) return false;
+        if (!Door!.ValidateAndUpdate(out err))
+            return false;
 
         string s = Key!.Location!.sceneName ?? "";
         if (Key.Location is DualLocation dl)
