@@ -46,7 +46,7 @@ public class RequestModifier
                 );
             }
 
-            if (RandoInterop.LS.IncludeKeyLocation(doorName))
+            if (RandoInterop.LS.IncludeKeyLocation(doorName, data))
             {
                 rb.EditLocationRequest(
                     data.Key!.Location!.name,
@@ -69,13 +69,13 @@ public class RequestModifier
     private static IEnumerable<string> SplitLeftTransitions() =>
         RandoInterop
             .LS.EnabledDoorNames.Select(d => DoorData.GetDoor(d)!.Door!)
-            .Where(d => d.Mode == DoorData.DoorInfo.SplitMode.Normal)
+            .Where(d => d.Mode == DoorData.DoorInfo.SplitMode.Normal && d.LeftLocation != null)
             .Select(d => d.LeftLocation!.TransitionName);
 
     private static IEnumerable<string> SplitRightTransitions() =>
         RandoInterop
             .LS.EnabledDoorNames.Select(d => DoorData.GetDoor(d)!.Door!)
-            .Where(d => d.Mode == DoorData.DoorInfo.SplitMode.Normal)
+            .Where(d => d.Mode == DoorData.DoorInfo.SplitMode.Normal && d.RightLocation != null)
             .Select(d => d.RightLocation!.TransitionName);
 
     private static void ApplyTransitionRando(RequestBuilder rb)
@@ -188,13 +188,13 @@ public class RequestModifier
                     rb.AddItemByName(data.Key!.ItemName);
                     if (rb.gs.DuplicateItemSettings.DuplicateUniqueKeys)
                         rb.AddItemByName($"{PlaceholderItem.Prefix}{data.Key.ItemName}");
-                    if (RandoInterop.LS.IncludeKeyLocation(doorName))
+                    if (RandoInterop.LS.IncludeKeyLocation(doorName, data))
                         rb.AddLocationByName(data.Key.Location!.name);
                 }
-                else if (RandoInterop.LS.IncludeKeyLocation(doorName))
+                else if (RandoInterop.LS.IncludeKeyLocation(doorName, data))
                     rb.AddToVanilla(new(data.Key!.ItemName, data.Key.Location!.name));
             }
-            else if (RandoInterop.LS.IncludeKeyLocation(doorName))
+            else if (RandoInterop.LS.IncludeKeyLocation(doorName, data))
                 rb.AddLocationByName(data.Key!.Location!.name);
         }
     }
@@ -206,7 +206,10 @@ public class RequestModifier
 
         Dictionary<string, string> keyLoc = [];
         foreach (var e in DoorData.All())
-            keyLoc[e.Value.Key!.ItemName] = e.Value.Key.Location!.name;
+        {
+            if (e.Value.Key!.Location != null)
+                keyLoc[e.Value.Key.ItemName] = e.Value.Key.Location.name;
+        }
 
         foreach (var gb in rb.EnumerateItemGroups())
         {

@@ -43,7 +43,8 @@ public record DoorData
         key.AddLocationInteropTags(data);
 
         Finder.DefineCustomItem(key);
-        Finder.DefineCustomLocation(data.Key!.Location!);
+        if (data.Key!.Location != null)
+            Finder.DefineCustomLocation(data.Key.Location);
     }
 
     public static void Load()
@@ -115,33 +116,34 @@ public record DoorData
 
         // Location where the player looks right to the door.
         public Location? RightLocation;
+
         public SplitMode Mode;
         public List<IDeployer>? Deployers;
 
-        private Location SplitLocation(Side side) =>
+        private Location? SplitLocation(Side side) =>
             Mode switch
             {
-                SplitMode.Normal => side == Side.Left ? LeftLocation! : RightLocation!,
-                SplitMode.LeftTwin => LeftLocation!,
-                SplitMode.RightTwin => RightLocation!,
+                SplitMode.Normal => side == Side.Left ? LeftLocation : RightLocation,
+                SplitMode.LeftTwin => LeftLocation,
+                SplitMode.RightTwin => RightLocation,
                 _ => throw new System.ArgumentException($"Unknown Side: {side}"),
             };
 
         [JsonIgnore]
-        public string LeftSceneName => SplitLocation(Side.Left).SceneName;
+        public string? LeftSceneName => SplitLocation(Side.Left)?.SceneName;
 
         [JsonIgnore]
-        public string RightSceneName => SplitLocation(Side.Right).SceneName;
+        public string? RightSceneName => SplitLocation(Side.Right)?.SceneName;
 
         public bool ValidateAndUpdate(out string err)
         {
-            if (!LeftLocation!.ValidateAndUpdate(out err))
+            if (LeftLocation != null && !LeftLocation.ValidateAndUpdate(out err))
                 return false;
-            if (!RightLocation!.ValidateAndUpdate(out err))
+            if (RightLocation != null && !RightLocation.ValidateAndUpdate(out err))
                 return false;
 
             bool split = Mode == SplitMode.Normal;
-            bool matching = LeftLocation.TransitionName == RightLocation.TransitionName;
+            bool matching = LeftLocation?.TransitionName == RightLocation?.TransitionName;
             if (split == matching)
             {
                 err = "Split mode does not match transitions";
@@ -186,7 +188,7 @@ public record DoorData
             if (WorldMapLocationOverride != null)
             {
                 WorldMapLocation first = WorldMapLocationOverride;
-                first.SceneName ??= Location!.sceneName ?? "";
+                first.SceneName ??= Location?.sceneName ?? "";
                 locations.Add(first);
             }
             else if (Location is DualLocation dl && dl.trueLocation is CoordinateLocation cl)
@@ -194,7 +196,7 @@ public record DoorData
                 locations.Add(
                     new()
                     {
-                        SceneName = Location!.sceneName ?? "",
+                        SceneName = cl.sceneName ?? "",
                         X = cl.x,
                         Y = cl.y,
                     }
@@ -244,7 +246,7 @@ public record DoorData
         if (!Door!.ValidateAndUpdate(out err))
             return false;
 
-        string s = Key!.Location!.sceneName ?? "";
+        string s = Key!.Location?.sceneName ?? "";
         if (Key.Location is DualLocation dl)
         {
             if (dl.falseLocation.sceneName != s)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MoreDoors.Data;
 using Newtonsoft.Json;
 using RandomizerCore.StringParsing;
 
@@ -18,8 +19,11 @@ public class LocalSettings
 
     public bool IncludeDoor(string doorName) => EnabledDoorNames.Contains(doorName);
 
-    public bool IncludeKeyLocation(string doorName)
+    public bool IncludeKeyLocation(string doorName, DoorData doorData)
     {
+        if (doorData.Key!.Location == null)
+            return false;
+
         return Settings.AddKeyLocations switch
         {
             AddKeyLocations.None => false,

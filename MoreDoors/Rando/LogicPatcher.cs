@@ -99,8 +99,10 @@ public static class LogicPatcher
         foreach (var data in DoorData.All())
         {
             var door = data.Value.Door!;
-            sceneToDoors.GetOrAddNew(door.LeftSceneName).Add(data.Key);
-            sceneToDoors.GetOrAddNew(door.RightSceneName).Add(data.Key);
+            if (door.LeftSceneName != null)
+                sceneToDoors.GetOrAddNew(door.LeftSceneName).Add(data.Key);
+            if (door.RightSceneName != null)
+                sceneToDoors.GetOrAddNew(door.RightSceneName).Add(data.Key);
         }
 
         List<string> keys = [.. startDefs.Keys];
@@ -126,18 +128,18 @@ public static class LogicPatcher
         {
             case DoorData.DoorInfo.SplitMode.Normal:
             {
-                HandleTransition(lmb, data, data.Door.LeftLocation!, fixedTerms, replacementMap);
-                HandleTransition(lmb, data, data.Door.RightLocation!, fixedTerms, replacementMap);
+                HandleTransition(lmb, data, data.Door.LeftLocation, fixedTerms, replacementMap);
+                HandleTransition(lmb, data, data.Door.RightLocation, fixedTerms, replacementMap);
                 break;
             }
             case DoorData.DoorInfo.SplitMode.LeftTwin:
             {
-                HandleTransition(lmb, data, data.Door.LeftLocation!, fixedTerms, replacementMap);
+                HandleTransition(lmb, data, data.Door.LeftLocation, fixedTerms, replacementMap);
                 break;
             }
             case DoorData.DoorInfo.SplitMode.RightTwin:
             {
-                HandleTransition(lmb, data, data.Door.RightLocation!, fixedTerms, replacementMap);
+                HandleTransition(lmb, data, data.Door.RightLocation, fixedTerms, replacementMap);
                 break;
             }
         }
@@ -146,11 +148,14 @@ public static class LogicPatcher
     private static void HandleTransition(
         LogicManagerBuilder lmb,
         DoorData data,
-        DoorData.DoorInfo.Location doorLoc,
+        DoorData.DoorInfo.Location? doorLoc,
         HashSet<string> fixedTerms,
         Dictionary<string, Token> replacementMap
     )
     {
+        if (doorLoc == null)
+            return;
+
         fixedTerms.Add(doorLoc.TransitionName);
         fixedTerms.Add(doorLoc.TransitionProxyName);
         replacementMap[doorLoc.TransitionName] = new NameToken(doorLoc.TransitionProxyName);
@@ -231,8 +236,8 @@ public static class LogicPatcher
             }
 
             // Add vanilla key logic defs.
-            if (ls.IncludeKeyLocation(doorName))
-                lmb.AddLogicDef(new(data.Key!.Location!.name, data.Key!.Logic));
+            if (ls.IncludeKeyLocation(doorName, data))
+                lmb.AddLogicDef(new(data.Key!.Location!.name, data.Key.Logic));
         }
     }
 

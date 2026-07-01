@@ -44,8 +44,10 @@ public class KeyItem : AbstractItem
 
     public void AddLocationInteropTags(DoorData data)
     {
-        var interop = AddInterop(data.Key!.Location!);
+        if (data.Key!.Location == null)
+            return;
 
+        var interop = AddInterop(data.Key.Location);
         interop.Properties["WorldMapLocations"] = data
             .Key.GetWorldMapLocations()
             .Select(l => l.AsTuple)

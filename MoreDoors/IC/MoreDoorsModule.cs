@@ -53,17 +53,22 @@ public class MoreDoorsModule : ItemChanger.Modules.Module
         DoorNamesByKey[data.PDKeyName] = doorName;
         DoorNamesByDoor[data.PDDoorOpenedName] = doorName;
 
-        DoorNamesByScene.GetOrAddNew(data.Door!.LeftSceneName).Add(doorName);
-        DoorNamesByScene.GetOrAddNew(data.Door!.RightSceneName).Add(doorName);
-        DoorNamesByTransition[data.Door!.LeftLocation!.TransitionName] = doorName;
-        DoorNamesByTransition[data.Door!.RightLocation!.TransitionName] = doorName;
-        DoorNamesByLeftForce[data.PDDoorLeftForceOpenedName] = doorName;
-        DoorNamesByRightForce[data.PDDoorRightForceOpenedName] = doorName;
-
-        PromptStrings[data.LeftKeyPromptId] = data.Door.LeftLocation.KeyDesc;
-        PromptStrings[data.LeftNoKeyPromptId] = data.Door.LeftLocation.NoKeyDesc;
-        PromptStrings[data.RightKeyPromptId] = data.Door.RightLocation.KeyDesc;
-        PromptStrings[data.RightNoKeyPromptId] = data.Door.RightLocation.NoKeyDesc;
+        if (data.Door!.LeftLocation != null)
+        {
+            DoorNamesByTransition[data.Door.LeftLocation.TransitionName] = doorName;
+            DoorNamesByScene.GetOrAddNew(data.Door.LeftSceneName!).Add(doorName);
+            PromptStrings[data.LeftKeyPromptId] = data.Door.LeftLocation.KeyDesc;
+            PromptStrings[data.LeftNoKeyPromptId] = data.Door.LeftLocation.NoKeyDesc;
+            DoorNamesByLeftForce[data.PDDoorLeftForceOpenedName] = doorName;
+        }
+        if (data.Door.RightLocation != null)
+        {
+            DoorNamesByTransition[data.Door.RightLocation.TransitionName] = doorName;
+            DoorNamesByScene.GetOrAddNew(data.Door.RightSceneName!).Add(doorName);
+            PromptStrings[data.RightKeyPromptId] = data.Door.RightLocation.KeyDesc;
+            PromptStrings[data.RightNoKeyPromptId] = data.Door.RightLocation.NoKeyDesc;
+            DoorNamesByRightForce[data.PDDoorRightForceOpenedName] = doorName;
+        }
 
         data.Door.Deployers?.ForEach(d => DeployersByScene.GetOrAddNew(d.SceneName).Add(d));
     }
@@ -220,12 +225,12 @@ public class MoreDoorsModule : ItemChanger.Modules.Module
             if (door.Mode != DoorData.DoorInfo.SplitMode.Normal)
                 return;
 
-            if (door.LeftLocation!.TransitionName == tname)
+            if (door.LeftLocation?.TransitionName == tname)
             {
                 DoorStates[doorName].LeftDoorForceOpened = true;
                 OnDoorOpened?.Invoke(doorName, true);
             }
-            else if (door.RightLocation!.TransitionName == tname)
+            else if (door.RightLocation?.TransitionName == tname)
             {
                 DoorStates[doorName].RightDoorForceOpened = true;
                 OnDoorOpened?.Invoke(doorName, false);

@@ -9,10 +9,10 @@ public interface IDoorDecorator
 
 internal record SpikeAttacher : IDoorDecorator
 {
-    public float OffsetX;
-    public float OffsetY;
-    public float Width;
-    public float Height;
+    public float OffsetX = 0f;
+    public float OffsetY = 0f;
+    public float Width = 1f;
+    public float Height = 1f;
 
     public void Decorate(GameObject door)
     {

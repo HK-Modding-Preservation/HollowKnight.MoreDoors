@@ -43,7 +43,8 @@ public static class Vanilla
         foreach (var door in doorNames)
         {
             var data = DoorData.GetDoor(door)!;
-            placements.Add(data.Key!.Location!.Wrap().Add(Finder.GetItem(data.Key!.ItemName)!));
+            if (data.Key!.Location != null)
+                placements.Add(data.Key.Location.Wrap().Add(Finder.GetItem(data.Key.ItemName)!));
         }
 
         ItemChangerMod.CreateSettingsProfile(false);

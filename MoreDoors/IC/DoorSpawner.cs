@@ -237,7 +237,10 @@ public static class DoorSpawner
     public static void SpawnDoor(MoreDoorsModule mod, SceneManager sm, string doorName, bool left)
     {
         var data = DoorData.GetDoor(doorName)!;
-        var loc = left ? data.Door!.LeftLocation! : data.Door!.RightLocation!;
+        var loc = left ? data.Door!.LeftLocation : data.Door!.RightLocation;
+        if (loc == null)
+            return;
+
         var open = mod.IsDoorOpened(doorName, left);
         if (open && loc.FadeOutOnOpen)
             return;

@@ -9,7 +9,7 @@ internal record SpriteDimmer : IDeployer
 {
     public string SceneName = "";
     public string TargetGameObject = "";
-    public float AlphaMultiplier;
+    public float AlphaMultiplier = 1f;
 
     string IDeployer.SceneName => SceneName;
 
