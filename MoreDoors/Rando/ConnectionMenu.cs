@@ -183,19 +183,26 @@ internal class ConnectionMenu
             var doorName = e.Key;
             var data = e.Value;
 
-            ToggleButton button = new(page, Localize(data.UIName));
-            button.ValueChanged += b =>
+            if(e.Value.Door?.NoRando == true)
             {
-                Settings.SetDoorEnabled(doorName, b);
-                OnCustomDoorsChanged();
-            };
-            OnCustomDoorsChanged += () =>
+                Settings.SetDoorEnabled(doorName, false);
+            }
+            else
             {
-                if (Settings.IsDoorEnabled(doorName) != button.Value)
-                    button.SetValue(!button.Value);
-            };
+                ToggleButton button = new(page, Localize(data.UIName));
+                button.ValueChanged += b =>
+                {
+                    Settings.SetDoorEnabled(doorName, b);
+                    OnCustomDoorsChanged();
+                };
+                OnCustomDoorsChanged += () =>
+                {
+                    if (Settings.IsDoorEnabled(doorName) != button.Value)
+                        button.SetValue(!button.Value);
+                };
 
-            doorButtons.Add(button);
+                doorButtons.Add(button);
+            }
         }
 
         SmallButton enableAllButton = NewDoorsToggleButton(page, "Enable All", true);

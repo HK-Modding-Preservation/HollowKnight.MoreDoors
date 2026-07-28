@@ -120,6 +120,9 @@ public record DoorData
         public SplitMode Mode;
         public List<IDeployer>? Deployers;
 
+        // Whether to include the door in the rando connections menu.
+        public bool NoRando = false;
+
         private Location? SplitLocation(Side side) =>
             Mode switch
             {
