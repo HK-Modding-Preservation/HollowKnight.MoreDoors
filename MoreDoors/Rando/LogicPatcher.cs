@@ -96,7 +96,7 @@ public static class LogicPatcher
     {
         // Forbid starting in a room with a door in it, to be safe.
         Dictionary<string, List<string>> sceneToDoors = [];
-        foreach (var data in DoorData.All())
+        foreach (var data in DoorData.AllRando())
         {
             var door = data.Value.Door!;
             if (door.LeftSceneName != null)
@@ -205,7 +205,7 @@ public static class LogicPatcher
         );
 
         var ls = RandoInterop.LS;
-        foreach (var e in DoorData.All())
+        foreach (var e in DoorData.AllRando())
         {
             var doorName = e.Key;
             var data = e.Value;

@@ -162,14 +162,14 @@ internal class ConnectionMenu
         SmallButton b = new(page, text);
         OnCustomDoorsChanged += () =>
         {
-            if (DoorData.All().Keys.All(d => Settings.IsDoorEnabled(d) == enabled))
+            if (DoorData.AllRando().Keys.All(d => Settings.IsDoorEnabled(d) == enabled))
                 b.Lock();
             else
                 b.Unlock();
         };
         b.OnClick += () =>
         {
-            DoorData.All().Keys.ForEach(d => Settings.SetDoorEnabled(d, enabled));
+            DoorData.AllRando().Keys.ForEach(d => Settings.SetDoorEnabled(d, enabled));
             OnCustomDoorsChanged();
         };
         return b;
@@ -178,31 +178,24 @@ internal class ConnectionMenu
     private void FillCustomDoorsPage(MenuPage page)
     {
         List<IMenuElement> doorButtons = [];
-        foreach (var e in DoorData.All())
+        foreach (var e in DoorData.AllRando())
         {
             var doorName = e.Key;
             var data = e.Value;
 
-            if(e.Value.Door?.NoRando == true)
+            ToggleButton button = new(page, Localize(data.UIName));
+            button.ValueChanged += b =>
             {
-                Settings.SetDoorEnabled(doorName, false);
-            }
-            else
+                Settings.SetDoorEnabled(doorName, b);
+                OnCustomDoorsChanged();
+            };
+            OnCustomDoorsChanged += () =>
             {
-                ToggleButton button = new(page, Localize(data.UIName));
-                button.ValueChanged += b =>
-                {
-                    Settings.SetDoorEnabled(doorName, b);
-                    OnCustomDoorsChanged();
-                };
-                OnCustomDoorsChanged += () =>
-                {
-                    if (Settings.IsDoorEnabled(doorName) != button.Value)
-                        button.SetValue(!button.Value);
-                };
+                if (Settings.IsDoorEnabled(doorName) != button.Value)
+                    button.SetValue(!button.Value);
+            };
 
-                doorButtons.Add(button);
-            }
+            doorButtons.Add(button);
         }
 
         SmallButton enableAllButton = NewDoorsToggleButton(page, "Enable All", true);

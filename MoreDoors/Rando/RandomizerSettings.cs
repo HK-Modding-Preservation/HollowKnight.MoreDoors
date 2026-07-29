@@ -32,7 +32,7 @@ public class RandomizationSettings
 
     [JsonIgnore]
     public bool IsEnabled =>
-        DisabledDoors.Count < DoorData.All().Count
+        DisabledDoors.Count < DoorData.AllRando().Count
         && (DoorsLevel != DoorsLevel.NoDoors || AddKeyLocations == AddKeyLocations.AllDoors);
 
     public bool IsDoorEnabled(string door) => !DisabledDoors.Contains(door);
@@ -46,7 +46,7 @@ public class RandomizationSettings
     }
 
     public void MaybeUpdateEnabledDoors() =>
-        DisabledDoors.RemoveWhere(d => !DoorData.All().ContainsKey(d));
+        DisabledDoors.RemoveWhere(d => !DoorData.AllRando().ContainsKey(d));
 }
 
 public static class RandomizationSettingsExtensions
@@ -59,7 +59,7 @@ public static class RandomizationSettingsExtensions
     {
         List<string> potentialDoors =
         [
-            .. DoorData.All().Keys.Where(d => !settings.DisabledDoors.Contains(d)),
+            .. DoorData.AllRando().Keys.Where(d => !settings.DisabledDoors.Contains(d)),
         ];
         if (gs.LongLocationSettings.WhitePalaceRando != LongLocationSettings.WPSetting.Allowed)
             potentialDoors.Remove("Pain");

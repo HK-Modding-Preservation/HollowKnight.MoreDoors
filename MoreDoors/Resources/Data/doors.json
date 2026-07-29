@@ -131,7 +131,8 @@
       "Logic": "*Charm_Notch-Fog_Canyon",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Bardoon": {
     "CamelCaseName": "Bardoon",
@@ -241,7 +242,8 @@
       "Logic": "Deepnest_East_06[right1]",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Broken": {
     "CamelCaseName": "Broken",
@@ -351,7 +353,8 @@
       "Logic": "*Pale_Ore-Basin",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Buried Geo": {
     "CamelCaseName": "BuriedGeo",
@@ -473,7 +476,8 @@
       "Logic": "Deepnest_East_07[left1]",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Canyon": {
     "CamelCaseName": "Canyon",
@@ -569,7 +573,8 @@
       "Logic": "Fungus2_18[top1]",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Core": {
     "CamelCaseName": "Core",
@@ -666,7 +671,8 @@
       "Logic": "Fungus2_31[left1] + Defeated_Mantis_Lords + (ANYCLAW | WINGS | DAMAGEBOOSTS + OBSCURESKIPS)",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Crown": {
     "CamelCaseName": "Crown",
@@ -784,7 +790,8 @@
         "Y": 67.5
       },
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Darknest": {
     "CamelCaseName": "DarkNest",
@@ -873,7 +880,8 @@
       "Logic": "Deepnest_26b[right2] + (ANYCLAW | WINGS)",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "False": {
     "CamelCaseName": "False",
@@ -975,7 +983,8 @@
       "Logic": "Crossroads_48[left1]",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Flooded Stag": {
     "CamelCaseName": "FloodedStag",
@@ -1075,7 +1084,8 @@
         "Y": 30.0
       },
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Fountain": {
     "CamelCaseName": "Fountain",
@@ -1143,7 +1153,8 @@
         "Y": 4.0
       },
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Fragile": {
     "CamelCaseName": "Fragile",
@@ -1246,7 +1257,8 @@
       "Logic": "Fungus2_05[right1] + COMBAT[Shrumal_Ogre]",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Fungal": {
     "CamelCaseName": "Fungal",
@@ -1349,7 +1361,8 @@
       "Logic": "Fungus2_05[right1] + COMBAT[Shrumal_Ogre]",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Garden": {
     "CamelCaseName": "Garden",
@@ -1435,7 +1448,8 @@
         "Y": 47.5
       },
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Heart": {
     "CamelCaseName": "Heart",
@@ -1542,7 +1556,8 @@
       "Logic": "Mines_05[left2]",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Hive": {
     "CamelCaseName": "Hive",
@@ -1649,7 +1664,8 @@
         "Y": 128.5
       },
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Isma": {
     "CamelCaseName": "Isma",
@@ -1738,7 +1754,8 @@
       "Logic": "Waterways_06[top1] | Waterways_06[right1] + (LEFTSUPERDASH | ACID)",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Joni": {
     "CamelCaseName": "Joni",
@@ -1848,7 +1865,8 @@
       "Logic": "(Fungus1_28[left1] | Fungus1_28[left2] + (RIGHTDASH | RIGHTSUPERDASH | WINGS | SHADESKIPS | LEFTCLAW + RIGHTCLAW + OBSCURESKIPS)) + LEFTBALDURS",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Junk": {
     "CamelCaseName": "Junk",
@@ -1937,7 +1955,8 @@
       "Logic": "Waterways_08[top1] + (ANYCLAW | WINGS | ENEMYPOGOS + RIGHTDASH)",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Lake": {
     "CamelCaseName": "Lake",
@@ -2053,7 +2072,8 @@
       "Logic": "Crossroads_01[left1] + DREAMER",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Mantis": {
     "CamelCaseName": "Mantis",
@@ -2161,7 +2181,8 @@
       "Logic": "Fungus2_13 | Fungus2_13[left3] + (RIGHTDASH | ACID | WINGS | LEFTCLAW | RIGHTCLAW + PRECISEMOVEMENT | AIRSTALL + ROOMSOUL | TERMINALSHADESKIPS)",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Miner": {
     "CamelCaseName": "Miner",
@@ -2250,7 +2271,8 @@
       "Logic": "Fungus2_23[right1]",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Moss": {
     "CamelCaseName": "Moss",
@@ -2351,7 +2373,8 @@
       "Logic": "Fungus1_26[right1]",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Mothwing": {
     "CamelCaseName": "Mothwing",
@@ -2447,7 +2470,8 @@
       "Logic": "Fungus1_32[bot1]",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Nest": {
     "CamelCaseName": "Nest",
@@ -2545,7 +2569,8 @@
       "Logic": "Fungus3_39[right1]",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Overgrown": {
     "CamelCaseName": "Overgrown",
@@ -2613,7 +2638,8 @@
         "Y": 55.0
       },
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Pain": {
     "CamelCaseName": "Pain",
@@ -2764,7 +2790,8 @@
           "Y": 65.0
         }
       ]
-    }
+    },
+    "NoRando": false
   },
   "Sanctum": {
     "CamelCaseName": "Sanctum",
@@ -2867,7 +2894,8 @@
       "Logic": "Ruins1_05c[bot1]",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Shade": {
     "CamelCaseName": "Shade",
@@ -2970,7 +2998,8 @@
       "Logic": "Abyss_20[top1]",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Traitor": {
     "CamelCaseName": "Traitor",
@@ -3090,7 +3119,8 @@
       "Logic": "*Love_Key",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   },
   "Village": {
     "CamelCaseName": "Village",
@@ -3179,6 +3209,7 @@
       "Logic": "(LANTERN | DARKROOMS) + (Deepnest_39[right1] + COMBAT[Left_Devout] | Deepnest_39[left1] + COMBAT[Right_Devout])",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
-    }
+    },
+    "NoRando": false
   }
 }

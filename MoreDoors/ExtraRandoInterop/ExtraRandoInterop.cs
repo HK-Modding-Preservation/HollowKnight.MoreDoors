@@ -20,7 +20,7 @@ internal class MoreKeysVictory : IVictoryCondition
     public int RequiredAmount { get; set; }
 
     public int ClampAvailableRange(int setAmount) =>
-        Math.Min(Data.DoorData.All().Count, Math.Max(setAmount, 0));
+        Math.Min(Data.DoorData.AllRando().Count, Math.Max(setAmount, 0));
 
     public string GetHintText() =>
         this.GenerateHintText("The keys can be found at:", item => item is KeyItem);

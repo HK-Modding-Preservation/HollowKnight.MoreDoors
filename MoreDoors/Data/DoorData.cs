@@ -27,6 +27,17 @@ public record DoorData
 
     public static IReadOnlyDictionary<string, DoorData> All() => AllData;
 
+    public static IReadOnlyDictionary<string, DoorData> AllRando()
+    {
+        Dictionary<string, DoorData> rando = [];
+        foreach (var e in All())
+        {
+            if (!e.Value.NoRando)
+                rando[e.Key] = e.Value;
+        }
+        return rando;
+    }
+
     public static DoorData? GetDoor(string name)
     {
         if (AllData.TryGetValue(name, out var data))
@@ -119,9 +130,6 @@ public record DoorData
 
         public SplitMode Mode;
         public List<IDeployer>? Deployers;
-
-        // Whether to include the door in the rando connections menu.
-        public bool NoRando = false;
 
         private Location? SplitLocation(Side side) =>
             Mode switch
@@ -216,6 +224,9 @@ public record DoorData
     }
 
     public KeyInfo? Key;
+
+    // If true, hide this door from the rando connections menu.
+    public bool NoRando = false;
 
     [JsonIgnore]
     public string PDKeyName => $"moreDoors{CamelCaseName}Key";

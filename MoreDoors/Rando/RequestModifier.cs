@@ -24,7 +24,7 @@ public class RequestModifier
         if (!RandoInterop.IsEnabled)
             return;
 
-        foreach (var e in DoorData.All())
+        foreach (var e in DoorData.AllRando())
         {
             var doorName = e.Key;
             var data = e.Value;
@@ -177,7 +177,7 @@ public class RequestModifier
             );
         }
 
-        foreach (var e in DoorData.All())
+        foreach (var e in DoorData.AllRando())
         {
             var doorName = e.Key;
             var data = e.Value;
@@ -205,7 +205,7 @@ public class RequestModifier
             return;
 
         Dictionary<string, string> keyLoc = [];
-        foreach (var e in DoorData.All())
+        foreach (var e in DoorData.AllRando())
         {
             if (e.Value.Key!.Location != null)
                 keyLoc[e.Value.Key.ItemName] = e.Value.Key.Location.name;

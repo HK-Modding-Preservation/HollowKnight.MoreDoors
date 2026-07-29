@@ -39,7 +39,7 @@ public static class Vanilla
         bool includeVanilla = MoreDoors.GS.EnableInVanilla;
         List<string> doorNames = rando
             ? GetRandoVanillaKeys()
-            : (includeVanilla ? new(DoorData.All().Keys) : new());
+            : (includeVanilla ? new(DoorData.AllRando().Keys) : new());
         foreach (var door in doorNames)
         {
             var data = DoorData.GetDoor(door)!;
