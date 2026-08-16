@@ -60,6 +60,8 @@ public class MoreDoors : Mod, IGlobalSettings<GlobalSettings>, ICustomMenuMod
         DoorData.Load();
 
         Vanilla.Setup();
+        if (ModHooks.GetMod("ConnectionSettingsRando") is Mod)
+            CSRInterop.CSRInterop.Setup();
         if (ModHooks.GetMod("DebugMod") is Mod)
             DebugInterop.DebugInterop.Setup();
         if (ModHooks.GetMod("ExtraRando") is Mod)

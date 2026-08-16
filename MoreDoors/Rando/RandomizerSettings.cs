@@ -23,8 +23,11 @@ public enum AddKeyLocations
     AllDoors,
 }
 
+file class CSRIgnoreAttribute : Attribute { }
+
 public class RandomizationSettings
 {
+    [CSRIgnore]
     public DoorsLevel DoorsLevel = DoorsLevel.NoDoors;
     public bool RandomizeDoorTransitions = false;
     public AddKeyLocations AddKeyLocations = AddKeyLocations.None;

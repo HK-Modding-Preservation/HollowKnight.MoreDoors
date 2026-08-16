@@ -10,8 +10,8 @@
     <Copyright>Copyright © dplochcoder 2022</Copyright>
     <Authors>dplochcoder</Authors>
     <NoWarn>7035</NoWarn>
-    <AssemblyVersion>3.3.2.0</AssemblyVersion>
-    <FileVersion>3.3.2.0</FileVersion>
+    <AssemblyVersion>3.4.0.0</AssemblyVersion>
+    <FileVersion>3.4.0.0</FileVersion>
     <Deterministic>false</Deterministic>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <LangVersion>latest</LangVersion>
@@ -82,6 +82,9 @@
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>$(HollowKnightRefs)/Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="ConnectionSettingsRando">
+      <HintPath>$(HollowKnightRefs)/Mods/ConnectionSettingsRando/ConnectionSettingsRando.dll</HintPath>
     </Reference>
     <Reference Include="DebugMod">
       <HintPath>$(HollowKnightRefs)/Mods/DebugMod/DebugMod.dll</HintPath>
