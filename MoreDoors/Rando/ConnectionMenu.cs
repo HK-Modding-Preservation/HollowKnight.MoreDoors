@@ -121,7 +121,11 @@ internal class ConnectionMenu
         OnCustomDoorsChanged += () =>
             customizeButton.Text.color = customizeButton.Locked
                 ? Colors.LOCKED_FALSE_COLOR
-                : (Settings.DisabledDoors.Count == 0 ? Colors.DEFAULT_COLOR : Colors.TRUE_COLOR);
+                : (
+                    Settings.EnabledDoors.Count == DoorData.AllRando().Count
+                        ? Colors.DEFAULT_COLOR
+                        : Colors.TRUE_COLOR
+                );
 
         transitions =
             (MenuItem<bool>)factory.ElementLookup[nameof(Settings.RandomizeDoorTransitions)];
@@ -152,8 +156,8 @@ internal class ConnectionMenu
 
         doorsLevel.SetValue(settings.DoorsLevel);
         addKeyLocations.SetValue(settings.AddKeyLocations);
-        Settings.DisabledDoors.Clear();
-        settings.DisabledDoors.ForEach(d => Settings.DisabledDoors.Add(d));
+        Settings.EnabledDoors.Clear();
+        settings.EnabledDoors.ForEach(d => Settings.EnabledDoors.Add(d));
         OnCustomDoorsChanged();
     }
 
