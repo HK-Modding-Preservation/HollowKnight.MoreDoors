@@ -58,6 +58,16 @@ internal static class CSRInterop
             }
         }
 
+        // Force key locations if necessary to prevent a launch error.
+        if (
+            settings.IsEnabled
+            && settings.EnabledDoors.Count > 0
+            && !RandomizerMod.RandomizerMod.RS.GenerationSettings.PoolSettings.Keys
+            && settings.AddKeyLocations == AddKeyLocations.None
+        )
+            settings.AddKeyLocations =
+                rng.Next(2) == 1 ? AddKeyLocations.MatchingDoors : AddKeyLocations.AllDoors;
+
         return (settings, stats);
     }
 }
