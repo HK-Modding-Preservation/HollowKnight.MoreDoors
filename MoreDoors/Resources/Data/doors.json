@@ -1952,7 +1952,7 @@
         "flingType": "Everywhere",
         "tags": null
       },
-      "Logic": "Waterways_08[top1] + (ANYCLAW | WINGS | ENEMYPOGOS + RIGHTDASH)",
+      "Logic": "Waterways_08[top1] + (ENEMYPOGOS | RIGHTCLAW | WINGS | RIGHTSUPERDASH)",
       "WorldMapLocationOverride": null,
       "ExtraWorldMapLocations": null
     },
