@@ -25,13 +25,36 @@ public enum AddKeyLocations
 
 file class CSRIgnoreAttribute : Attribute { }
 
-public class RandomizationSettings
+public class DoorSet : SortedSet<string>, ICopyable
+{
+    public DoorSet() { }
+
+    public DoorSet(IEnumerable<string> items)
+    {
+        foreach (var item in items)
+            Add(item);
+    }
+
+    public object Clone() => new DoorSet(this);
+
+    public void CopyFrom(ICopyable src)
+    {
+        if (src is not DoorSet doorSet)
+            return;
+
+        Clear();
+        foreach (var item in doorSet)
+            Add(item);
+    }
+}
+
+public class RandomizationSettings : Copyable<RandomizationSettings>
 {
     [CSRIgnore]
     public DoorsLevel DoorsLevel = DoorsLevel.NoDoors;
     public bool RandomizeDoorTransitions = false;
     public AddKeyLocations AddKeyLocations = AddKeyLocations.None;
-    public SortedSet<string> EnabledDoors = [];
+    public DoorSet EnabledDoors = [];
 
     [JsonIgnore]
     public bool IsEnabled =>

@@ -49,11 +49,7 @@ internal class ConnectionMenu
     private void SetEnabledColor() =>
         entryButton.Text.color = Settings.IsEnabled ? Colors.TRUE_COLOR : Colors.DEFAULT_COLOR;
 
-    private MenuItem<T> ModifyColors<T>(
-        MenuElementFactory<RandomizationSettings> factory,
-        string fieldName,
-        T none
-    )
+    private MenuItem<T> ModifyColors<T>(string fieldName, T none)
     {
         MenuItem<T> item = (MenuItem<T>)factory.ElementLookup[fieldName];
         item.ValueChanged += value =>
@@ -65,31 +61,28 @@ internal class ConnectionMenu
         return item;
     }
 
-    private void LockIf<T>(MenuItem<T> item, T value, params ILockable[] lockables)
+    private void HideIf<T>(MenuItem<T> item, T value, params IMenuElement[] elements)
     {
-        item.ValueChanged += UpdateLocks;
-        UpdateLocks(item.Value);
+        item.ValueChanged += UpdateVisibility;
+        UpdateVisibility(item.Value);
 
-        void UpdateLocks(T t)
+        void UpdateVisibility(T t)
         {
             if (EqualityComparer<T>.Default.Equals(t, value))
             {
-                foreach (var lockable in lockables)
-                {
-                    lockable.Lock();
-                }
+                foreach (var element in elements)
+                    element.Hide();
             }
             else
             {
-                foreach (var lockable in lockables)
-                {
-                    lockable.Unlock();
-                }
+                foreach (var element in elements)
+                    element.Show();
             }
         }
     }
 
     private readonly SmallButton entryButton;
+    private readonly MenuElementFactory<RandomizationSettings> factory;
     private readonly MenuItem<DoorsLevel> doorsLevel;
     private readonly MenuItem<AddKeyLocations> addKeyLocations;
     private readonly MenuItem<bool> transitions;
@@ -98,7 +91,7 @@ internal class ConnectionMenu
     private delegate void CustomDoorsChanged();
     private event CustomDoorsChanged OnCustomDoorsChanged;
 
-    private RandomizationSettings Settings => MoreDoors.GS.RandoSettings;
+    private static RandomizationSettings Settings => MoreDoors.GS.RandoSettings;
 
     private ConnectionMenu(MenuPage connectionsPage)
     {
@@ -106,20 +99,16 @@ internal class ConnectionMenu
         entryButton = new(connectionsPage, Localize("More Doors"));
         entryButton.AddHideAndShowEvent(moreDoorsPage);
 
-        MenuElementFactory<RandomizationSettings> factory = new(moreDoorsPage, Settings);
+        factory = new(moreDoorsPage, Settings);
         Localize(factory);
 
-        doorsLevel = ModifyColors(factory, nameof(Settings.DoorsLevel), DoorsLevel.NoDoors);
-        addKeyLocations = ModifyColors(
-            factory,
-            nameof(Settings.AddKeyLocations),
-            AddKeyLocations.None
-        );
+        doorsLevel = ModifyColors(nameof(Settings.DoorsLevel), DoorsLevel.NoDoors);
+        addKeyLocations = ModifyColors(nameof(Settings.AddKeyLocations), AddKeyLocations.None);
         SetEnabledColor();
 
         SmallButton customizeButton = new(moreDoorsPage, Localize("Customize Doors"));
         OnCustomDoorsChanged += () =>
-            customizeButton.Text.color = customizeButton.Locked
+            customizeButton.Text.color = customizeButton.Hidden
                 ? Colors.LOCKED_FALSE_COLOR
                 : (
                     Settings.EnabledDoors.Count == DoorData.AllRando().Count
@@ -129,7 +118,7 @@ internal class ConnectionMenu
 
         transitions =
             (MenuItem<bool>)factory.ElementLookup[nameof(Settings.RandomizeDoorTransitions)];
-        LockIf(doorsLevel, DoorsLevel.NoDoors, transitions, customizeButton);
+        HideIf(doorsLevel, DoorsLevel.NoDoors, transitions, customizeButton);
         doorsLevel.ValueChanged += _ => OnCustomDoorsChanged();
 
         MenuPage customPage = new("MoreDoors Customize Doors", moreDoorsPage);
@@ -151,13 +140,8 @@ internal class ConnectionMenu
 
     public void ApplySettings(RandomizationSettings settings)
     {
-        transitions.Unlock();
-        transitions.SetValue(settings.RandomizeDoorTransitions);
-
-        doorsLevel.SetValue(settings.DoorsLevel);
-        addKeyLocations.SetValue(settings.AddKeyLocations);
-        Settings.EnabledDoors.Clear();
-        settings.EnabledDoors.ForEach(d => Settings.EnabledDoors.Add(d));
+        Settings.CopyFrom(settings);
+        factory.SetMenuValues(settings);
         OnCustomDoorsChanged();
     }
 
@@ -167,9 +151,9 @@ internal class ConnectionMenu
         OnCustomDoorsChanged += () =>
         {
             if (DoorData.AllRando().Keys.All(d => Settings.IsDoorEnabled(d) == enabled))
-                b.Lock();
+                b.Hide();
             else
-                b.Unlock();
+                b.Show();
         };
         b.OnClick += () =>
         {
