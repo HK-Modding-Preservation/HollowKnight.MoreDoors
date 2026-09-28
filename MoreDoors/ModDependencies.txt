@@ -1,5 +1,7 @@
 CondensedSpoilerLogger
+ConnectionSettingsRando
 DebugMod
+Extra Rando
 FStats
 ItemChanger
 MenuChanger
@@ -9,5 +11,3 @@ RandomizerCore
 RandomizerCore.Json
 RandoSettingsManager
 SFCore
-Extra Rando
-ConnectionSettingsRando
